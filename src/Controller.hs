@@ -33,10 +33,27 @@ handleEvent event m@(Model ss t c) =
     PointerRelease p -> undefined -- TODO
     _ -> m
 
--- TODO
+-- | Returns the next colour from the set of ColourNames.
 nextColour :: ColourName -> ColourName
-nextColour = undefined
+nextColour colourName = case colourName of
+  Black     -> Red
+  Red       -> Orange
+  Orange    -> Yellow
+  Yellow    -> Green
+  Green     -> Blue
+  Blue      -> Violet
+  Violet    -> Black
 
--- TODO
+-- | Returns the next Tool if no point is held, otherwise returns the argument unchanged.
 nextTool :: Tool -> Tool
-nextTool = undefined
+nextTool tool = case tool of
+  LineTool Nothing      -> PolygonTool []
+  PolygonTool []        -> RectangleTool Nothing
+  RectangleTool Nothing -> CircleTool Nothing
+  CircleTool Nothing    -> EllipseTool Nothing
+  EllipseTool Nothing   -> LineTool Nothing
+  LineTool x            -> LineTool x
+  PolygonTool x         -> PolygonTool x
+  RectangleTool x       -> RectangleTool x
+  CircleTool x          -> CircleTool x
+  EllipseTool x         -> EllipseTool x
