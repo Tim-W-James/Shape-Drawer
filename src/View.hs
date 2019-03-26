@@ -27,18 +27,42 @@ toolLabel tool = case tool of
   CircleTool _    -> "Circle... click-drag-release"
   EllipseTool _   -> "Ellipse... click-drag-release"
 
--- TODO
+-- | Returns a Picture of Shape coloured ColourName from ColourShape.
 colourShapesToPicture :: [ColourShape] -> Picture
-colourShapesToPicture = undefined
+colourShapesToPicture colourShapeList = case colourShapeList of
+  [] -> mempty
+  x:xs -> colourShapeToPicture x & colourShapesToPicture xs
 
--- TODO
+-- | Returns a Picture of Shape coloured ColourName from ColourShape.
 colourShapeToPicture :: ColourShape -> Picture
-colourShapeToPicture = undefined
+colourShapeToPicture (colourName, shape) = coloured (colourNameToColour colourName) (shapeToPicture shape)
 
--- TODO
+-- | Returns the (CodeWorld) Colour equivalent of ColourName.
 colourNameToColour :: ColourName -> Colour
-colourNameToColour = undefined
+colourNameToColour colourName = case colourName of
+  Black     -> black
+  Red       -> red
+  Orange    -> orange
+  Yellow    -> yellow
+  Green     -> green
+  Blue      -> blue
+  Violet    -> violet
 
--- TODO
+-- | Returns a Picture of Shape based on Point inputs.
 shapeToPicture :: Shape -> Picture
-shapeToPicture = undefined
+shapeToPicture shape = case shape of
+  Line (x0,y0) (x1,y1)      -> polyline [(x0,y0),(x1,y1)]
+  Polygon xList             -> solidPolygon xList
+  Rectangle (x0,y0) (x1,y1) -> translated (midpoint x0 x1) (midpoint y0 y1) (solidRectangle (distance x0 x1) (distance y0 y1))
+  Circle (x0,y0) (x1,y1)    -> translated x0 y0 (solidCircle (sqrt ((x1 - x0)**2 + (y1 - y0)**2)))
+  Ellipse (x0,y0) (x1,y1)
+    | (distance x0 x1) > (distance y0 y1) -> transScaleSolidCircle (midpoint x0 x1) (midpoint y0 y1) ((distance x0 x1)/(distance y0 y1)) 1 ((distance y0 y1)/2)
+    | otherwise -> transScaleSolidCircle (midpoint x0 x1) (midpoint y0 y1) 1 ((distance y0 y1)/(distance x0 x1)) ((distance x0 x1)/2)
+  where
+    distance a b = abs (a - b)
+    midpoint a b = (a + b) / 2
+    transScaleSolidCircle transA transB scaleA scaleB raduis = translated transA transB (scaled scaleA scaleB (solidCircle raduis))
+
+-- | Returns a picture that combines the input picture with a coordinatePlane, for testing and dimensioning purposes.
+addCoordinatePlane :: Picture -> Picture
+addCoordinatePlane picture = coordinatePlane & picture
