@@ -1,4 +1,10 @@
 --- Copyright 2019 The Australian National University, All rights reserved
+{-
+
+Name: Tim James
+ID: u6947396
+
+-}
 
 module Model where
 
