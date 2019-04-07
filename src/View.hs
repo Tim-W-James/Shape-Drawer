@@ -74,13 +74,9 @@ shapeToPicture shape = case shape of
   Circle (x0,y0) (x1,y1)    -> translated x0 y0 (solidCircle (sqrt ((x1 - x0)**2 + (y1 - y0)**2)))
 
   -- An ellipse is constructed with each point defining opposite corners of a bounding box.
-  -- A circle is drawn within the bounding box, having a radius of half of the distance between the minor axis of the points,
-  -- and a major axis is scaled by the ratio of the distance between major axis points to the distance between minor axis points.
-  Ellipse (x0,y0) (x1,y1)
-  -- Horizontal axis is major axis.
-    | (distance x0 x1) > (distance y0 y1) -> transScaleSolidCircle (midpoint x0 x1) (midpoint y0 y1) ((distance x0 x1)/(distance y0 y1)) 1 ((distance y0 y1)/2)
-  -- Vertical axis is major axis, or both axes are the same length.
-    | otherwise -> transScaleSolidCircle (midpoint x0 x1) (midpoint y0 y1) 1 ((distance y0 y1)/(distance x0 x1)) ((distance x0 x1)/2)
+  -- A circle is drawn within the bounding box, having a radius of half of the distance between the vertical axis of the points,
+  -- and the horizontal axis is scaled by the ratio of the distance between vertical axis points to the distance between horizontal axis points.
+  Ellipse (x0,y0) (x1,y1) -> translated (midpoint x0 x1) (midpoint y0 y1) (scaled ((distance x0 x1)/(distance y0 y1)) 1 (solidCircle ((distance y0 y1)/2)))
 
   where
     -- For use in finding the distance between point co-ordinates.
@@ -90,10 +86,6 @@ shapeToPicture shape = case shape of
     -- For use in finding the midpoint between point co-ordinates.
     midpoint :: Double -> Double -> Double
     midpoint a b = (a + b) / 2
-
-    -- For use with drawing an Ellipse.
-    transScaleSolidCircle :: Double -> Double -> Double -> Double -> Double -> Picture
-    transScaleSolidCircle transA transB scaleA scaleB raduis = translated transA transB (scaled scaleA scaleB (solidCircle raduis))
 
 -- | Returns a picture that combines the input picture with a coordinatePlane, for testing and dimensioning purposes.
 addCoordinatePlane :: Picture -> Picture
