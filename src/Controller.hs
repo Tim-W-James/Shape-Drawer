@@ -38,11 +38,9 @@ handleEvent event m@(Model ss t c) =
       | k == " " -> case t of
         -- Builds a polygon only if PolygonTool is selected.
         PolygonTool pointList
-          -- A polygon must have at least 3 points, so if pointList has less than 3 members, do nothing.
+          -- A polygon must have at least 3 points.
           | (length pointList) < 3 -> Model ss t c
-          -- If pointList has at least 3 members, add the ColourShape to the list of ColourShapes ss in Model.
           | otherwise -> Model ((c,(Polygon pointList)):ss) (PolygonTool []) c
-        -- Otherwise, do nothing.
         _ -> Model ss t c
 
       -- switch tool
@@ -56,7 +54,7 @@ handleEvent event m@(Model ss t c) =
       where k = unpack key
 
     PointerPress p -> case t of
-      -- If PolygonTool, add Point p to the list of Points stored in the Tool.
+      -- If PolygonTool, add Point p to the list of stored points.
       PolygonTool pointList             -> Model ss (PolygonTool (p : pointList)) c
       -- Otherwise, add Point p to the held Point of the selected Tool.
       LineTool _                        -> Model ss (LineTool (Just p)) c
@@ -65,10 +63,9 @@ handleEvent event m@(Model ss t c) =
       EllipseTool _                     -> Model ss (EllipseTool (Just p)) c
 
     PointerRelease p -> case t of
-      -- If PolygonTool, do nothing.
+      -- Nothing is added to the PolygonTool on release.
       PolygonTool _                     -> Model ss t c
-      -- Otherwise, add ColourShape to the list of all ColourShapes ss in Model from selected Tool, its held Point, and the new Point p.
-      -- Also reset held Point in Tool for future Shapes.
+      -- Otherwise a shape is rendered and the held point of the selected Tool is reset.
       LineTool (Just firstPoint)        -> Model ((c,(Line firstPoint p)):ss) (LineTool Nothing) c
       RectangleTool (Just firstPoint)   -> Model ((c,(Rectangle firstPoint p)):ss) (RectangleTool Nothing) c
       CircleTool (Just firstPoint)      -> Model ((c,(Circle firstPoint p)):ss) (CircleTool Nothing) c

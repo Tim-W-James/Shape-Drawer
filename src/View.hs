@@ -27,7 +27,7 @@ modelToPicture (Model ss t c)
 -- | Returns instructions on how to use each Tool.
 toolLabel :: Tool -> String
 toolLabel tool = case tool of
-  -- Define the label depending on tool.
+  -- Define the label to inform on how each tool is used.
   LineTool _      -> "Line... click-drag-release"
   PolygonTool _   -> "Polygon... click 3 or more times then spacebar"
   RectangleTool _ -> "Rectangle... click-drag-release"
@@ -37,10 +37,9 @@ toolLabel tool = case tool of
 -- | Returns a Picture of Shape coloured ColourName from ColourShape.
 colourShapesToPicture :: [ColourShape] -> Picture
 colourShapesToPicture colourShapeList = case colourShapeList of
-  -- If colourShapeList is empty, return an empty Picture (base case).
+  -- If no shaped are stored, the picture should be empty.
   [] -> mempty
-  -- Otherwise, combine the first element of colourShapeList recursively with every other element in colourShapeList.
-  -- Each element is converted from a ColourShape into a picture.
+  -- Otherwise, combine all elements of colourShapeList into a single picture.
   x:xs -> colourShapeToPicture x & colourShapesToPicture xs
 
 -- | Returns a Picture of Shape coloured ColourName from ColourShape.
@@ -50,7 +49,7 @@ colourShapeToPicture (colourName, shape) = coloured (colourNameToColour colourNa
 -- | Returns the (CodeWorld) Colour equivalent of ColourName.
 colourNameToColour :: ColourName -> Colour
 colourNameToColour colourName = case colourName of
-  -- Each case of ColourName is matched against its Colour equivalent.
+  -- Each case of ColourName is matched against its Colour (CodeWorld) equivalent.
   Black     -> black
   Red       -> red
   Orange    -> orange
@@ -62,22 +61,21 @@ colourNameToColour colourName = case colourName of
 -- | Returns a Picture of Shape based on Point inputs.
 shapeToPicture :: Shape -> Picture
 shapeToPicture shape = case shape of
-  -- Line utilizes the polyline function, using only two points.
+  -- Line is constructed with only two points in a polyline function, where each point is a vertex.
   Line (x0,y0) (x1,y1)      -> polyline [(x0,y0),(x1,y1)]
 
-  -- Polygon uses a list of points and the function solidPolygon.
+  -- Polygon is constructed through a list of points where each point is a vertex.
   Polygon xList             -> solidPolygon xList
 
-  -- Rectangle applies the width and height based on the distance between each point to solidRectangle, and is translated to the midpoint between both points.
+  -- Rectangle is constructed through two points where each point is an opposite corner.
   Rectangle (x0,y0) (x1,y1) -> translated (midpoint x0 x1) (midpoint y0 y1) (solidRectangle (distance x0 x1) (distance y0 y1))
 
-  -- Circle is translated to the first point, and solidCircle is applied to the radius calculated with the second point being on the circumference.
+  -- Circle is constructed where the first point is the centre, and the second point is a point on the circumference.
   Circle (x0,y0) (x1,y1)    -> translated x0 y0 (solidCircle (sqrt ((x1 - x0)**2 + (y1 - y0)**2)))
 
-  -- An ellipse is constructed by applying solidCircle to the radius calculated with half of the distance between the major axis of the points,
-  -- then the major axis is scaled by the ratio of the distance between major axis points to the distance between minor axis points,
-  -- and is finally translated to the midpoint between both points.
-  -- Note the use of helper functions.
+  -- An ellipse is constructed with each point defining opposite corners of a bounding box.
+  -- A circle is drawn within the bounding box, having a radius of half of the distance between the minor axis of the points,
+  -- and a major axis is scaled by the ratio of the distance between major axis points to the distance between minor axis points.
   Ellipse (x0,y0) (x1,y1)
   -- Horizontal axis is major axis.
     | (distance x0 x1) > (distance y0 y1) -> transScaleSolidCircle (midpoint x0 x1) (midpoint y0 y1) ((distance x0 x1)/(distance y0 y1)) 1 ((distance y0 y1)/2)
@@ -85,13 +83,15 @@ shapeToPicture shape = case shape of
     | otherwise -> transScaleSolidCircle (midpoint x0 x1) (midpoint y0 y1) 1 ((distance y0 y1)/(distance x0 x1)) ((distance x0 x1)/2)
 
   where
-    -- Returns the absolute difference of two variables.
+    -- For use in finding the distance between point co-ordinates.
     distance :: Double -> Double -> Double
     distance a b = abs (a - b)
-    -- Returns half of the sum of two variables.
+
+    -- For use in finding the midpoint between point co-ordinates.
     midpoint :: Double -> Double -> Double
     midpoint a b = (a + b) / 2
-    -- Returns a Picture of a solidCircle that is translated and scaled. For use with drawing an Ellipse.
+
+    -- For use with drawing an Ellipse.
     transScaleSolidCircle :: Double -> Double -> Double -> Double -> Double -> Picture
     transScaleSolidCircle transA transB scaleA scaleB raduis = translated transA transB (scaled scaleA scaleB (solidCircle raduis))
 
