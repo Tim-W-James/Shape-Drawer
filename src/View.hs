@@ -75,8 +75,8 @@ shapeToPicture shape = case shape of
 
   -- An ellipse is constructed with each point defining opposite corners of a bounding box.
   -- A circle is drawn within the bounding box, having a radius of half of the distance between the vertical axis of the points,
-  -- and the horizontal axis is scaled by the ratio of the distance between vertical axis points to the distance between horizontal axis points.
-  Ellipse (x0,y0) (x1,y1) -> translated (midpoint x0 x1) (midpoint y0 y1) (scaled ((distance x0 x1)/(distance y0 y1)) 1 (solidCircle ((distance y0 y1)/2)))
+  -- and the horizontal axis is scaled by the ratio of the distance between horizontal axis points to the distance between vertical axis points.
+  Ellipse (x0, y0) (x1, y1) -> translated (midpoint x0 x1) (midpoint y0 y1) (scaled ((distance x0 x1)/(distance y0 y1)) 1 (solidCircle ((distance y0 y1)/2)))
 
   where
     -- For use in finding the distance between point co-ordinates.
