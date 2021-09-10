@@ -29,7 +29,7 @@
   <h2 align="center">Shape Drawer</h2>
 
   <p align="center">
-    Artificial intelligence algorithm that can determine optimal moves to take in a game of Sushi Go.
+    Program that allows users to draw shapes, build with Haskell
     <br />
     This project was created during my university studies at <b>ANU</b> in <b>2019</b> and has been transferred from the ANU GitLab server.
     <br />
