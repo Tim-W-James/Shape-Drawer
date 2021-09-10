@@ -29,7 +29,7 @@
   <h2 align="center">Shape Drawer</h2>
 
   <p align="center">
-    Program that allows users to draw shapes, build with Haskell
+    Program that allows users to draw shapes, built with Haskell
     <br />
     This project was created during my university studies at <b>ANU</b> in <b>2019</b> and has been transferred from the ANU GitLab server.
     <br />
