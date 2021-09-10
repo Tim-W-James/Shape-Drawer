@@ -74,8 +74,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 Using the functional programming language [Haskell](https://www.haskell.org/platform/) I created a program that draws shapes (line, polygon, rectangle, circle and ellipse).
 Find the core algorithm in [src/view.hs](https://github.com/Tim-W-James/Shape-Drawer/blob/master/src/view.hs).
 To find out how the algorithm has been implemented, read the [report](https://github.com/Tim-W-James/Shape-Drawer/blob/master/report.pdf).
@@ -115,7 +113,7 @@ Available shapes:
 * rectangle
 * circle
 * ellipse
-<br>
+
 | Action                     | Effect                                                                            |
 |----------------------------|-----------------------------------------------------------------------------------|
 | `Esc` (key)                | Clear the canvas                                                                  |
